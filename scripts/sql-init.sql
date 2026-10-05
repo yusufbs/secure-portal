@@ -1,0 +1,21 @@
+-- Initialize Database and App User with least-privilege access
+IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'SecurePortalDb')
+BEGIN
+    CREATE DATABASE [SecurePortalDb];
+END
+GO
+
+USE [SecurePortalDb];
+GO
+
+-- Ensure strong ANSI and safety settings
+ALTER DATABASE [SecurePortalDb] SET ANSI_NULL_DEFAULT ON;
+ALTER DATABASE [SecurePortalDb] SET ANSI_NULLS ON;
+ALTER DATABASE [SecurePortalDb] SET ANSI_PADDING ON;
+ALTER DATABASE [SecurePortalDb] SET ANSI_WARNINGS ON;
+ALTER DATABASE [SecurePortalDb] SET ARITHABORT ON;
+ALTER DATABASE [SecurePortalDb] SET CONCAT_NULL_YIELDS_NULL ON;
+ALTER DATABASE [SecurePortalDb] SET QUOTED_IDENTIFIER ON;
+ALTER DATABASE [SecurePortalDb] SET ALLOW_SNAPSHOT_ISOLATION ON;
+ALTER DATABASE [SecurePortalDb] SET READ_COMMITTED_SNAPSHOT ON;
+GO

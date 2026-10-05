@@ -1,0 +1,25 @@
+# .NET Build artifacts
+bin/
+obj/
+*.user
+*.suo
+.vs/
+.vscode/
+*.DotSettings.user
+
+# Node / Angular
+node_modules/
+dist/
+.angular/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment & Secrets
+.env
+*.pfx
+*.key
+DataProtection-Keys/
+
+# Docker volumes
+sqlserver_data/
