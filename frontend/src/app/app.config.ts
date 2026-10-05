@@ -1,7 +1,9 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter, withComponentInputBinding, withViewTransitions } from '@angular/router';
-import { provideHttpClient, withFetch, withXsrfConfiguration } from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors, withXsrfConfiguration } from '@angular/common/http';
 import { routes } from './app.routes';
+import { authInterceptor } from './core/interceptors/auth.interceptor';
+import { errorInterceptor } from './core/interceptors/error.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -14,13 +16,14 @@ export const appConfig: ApplicationConfig = {
     // 3. Modern routing with view transitions & component input binding
     provideRouter(routes, withComponentInputBinding(), withViewTransitions()),
 
-    // 4. Fetch-based HttpClient with automatic XSRF protection
+    // 4. Fetch-based HttpClient with automatic XSRF protection & interceptors
     provideHttpClient(
       withFetch(),
       withXsrfConfiguration({
         cookieName: 'XSRF-TOKEN',
         headerName: 'X-XSRF-TOKEN'
-      })
+      }),
+      withInterceptors([authInterceptor, errorInterceptor])
     )
   ]
 };

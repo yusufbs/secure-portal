@@ -15,6 +15,12 @@ using SecurePortal.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Disable Kestrel Server header for server concealment
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.AddServerHeader = false;
+});
+
 // -----------------------------------------------------------------------------
 // 1. Structured Logging with Serilog & PII Redaction
 // -----------------------------------------------------------------------------

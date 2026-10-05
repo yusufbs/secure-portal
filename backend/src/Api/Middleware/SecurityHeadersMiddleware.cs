@@ -31,9 +31,14 @@ public class SecurityHeadersMiddleware
         context.Response.Headers.Append("Cross-Origin-Opener-Policy", "same-origin");
         context.Response.Headers.Append("Cross-Origin-Resource-Policy", "same-origin");
 
-        // 7. Strip fingerprinting Server banners
-        context.Response.Headers.Remove("Server");
-        context.Response.Headers.Remove("X-Powered-By");
+        // 7. Strip fingerprinting Server banners on response start
+        context.Response.OnStarting(() =>
+        {
+            context.Response.Headers.Remove("Server");
+            context.Response.Headers.Remove("X-Powered-By");
+            context.Response.Headers.Remove("X-AspNet-Version");
+            return Task.CompletedTask;
+        });
 
         await _next(context);
     }
