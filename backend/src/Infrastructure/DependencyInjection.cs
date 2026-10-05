@@ -48,6 +48,13 @@ public static class DependencyInjection
         services.AddHttpContextAccessor();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
         services.AddSingleton<IPasswordHashService, PasswordHashService>();
+        services.AddScoped<ITokenService, TokenService>();
+        services.AddScoped<SecurePortal.Application.Features.Auth.Services.IAuthService, SecurePortal.Infrastructure.Services.AuthService>();
+
+        // 5. Domain Business Services
+        services.AddScoped<SecurePortal.Application.Features.Tasks.Services.ITaskService, SecurePortal.Infrastructure.Services.TaskService>();
+        services.AddScoped<SecurePortal.Application.Features.Documents.Services.IDocumentService, SecurePortal.Infrastructure.Services.DocumentService>();
+        services.AddScoped<SecurePortal.Application.Features.Audit.Services.IAuditService, SecurePortal.Infrastructure.Services.AuditService>();
 
         return services;
     }
