@@ -13,7 +13,7 @@ public class SecurityHeadersMiddleware
     {
         // 1. Content Security Policy (CSP)
         context.Response.Headers.Append("Content-Security-Policy", 
-            "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://localhost:7123 https://localhost:4200; frame-ancestors 'none'; object-src 'none'; base-uri 'self';");
+            "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://localhost:7123 https://localhost:4200 http://localhost:4200 http://localhost:5047 https://localhost:7051 ws: wss:; frame-ancestors 'none'; object-src 'none'; base-uri 'self';");
 
         // 2. Prevent MIME-sniffing
         context.Response.Headers.Append("X-Content-Type-Options", "nosniff");

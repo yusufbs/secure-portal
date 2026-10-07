@@ -124,8 +124,8 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins(allowedOrigins)
             .AllowCredentials()
-            .WithHeaders("Authorization", "Content-Type", "X-XSRF-TOKEN")
-            .WithMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
+            .AllowAnyHeader()
+            .AllowAnyMethod();
     });
 });
 
@@ -247,12 +247,15 @@ app.UseMiddleware<SecurityHeadersMiddleware>();
 // Global Exception Handler (RFC 7807 ProblemDetails)
 app.UseExceptionHandler();
 
+// CORS (must precede HTTPS redirection and endpoint handlers)
+app.UseCors("AllowAngularClient");
+
 // HTTPS Redirection & HSTS
 if (!app.Environment.IsDevelopment())
 {
     app.UseHsts();
+    app.UseHttpsRedirection();
 }
-app.UseHttpsRedirection();
 
 // Swagger Documentation
 app.UseSwagger();
@@ -261,9 +264,6 @@ app.UseSwaggerUI(c =>
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "SecurePortal API v1");
     c.RoutePrefix = "swagger";
 });
-
-// CORS
-app.UseCors("AllowAngularClient");
 
 // Rate Limiting
 app.UseRateLimiter();
