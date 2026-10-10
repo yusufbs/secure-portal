@@ -1,0 +1,110 @@
+<div class="container">
+  <div class="dashboard-header">
+    <div>
+      <h1 class="page-title">Welcome, {{ authService.currentUser()?.firstName }}</h1>
+      <p class="page-subtitle">Security posture is active • Session secured with HttpOnly cookies & RBAC</p>
+    </div>
+    <div class="header-actions">
+      <a routerLink="/tasks" class="btn btn-primary btn-sm">+ New Task</a>
+      <a routerLink="/documents" class="btn btn-secondary btn-sm">Upload File</a>
+    </div>
+  </div>
+
+  <!-- Metric Stats Cards -->
+  <div class="grid-4 stats-grid">
+    <div class="card stat-card">
+      <span class="stat-label">Total Tasks</span>
+      <span class="stat-value">{{ totalTasks() }}</span>
+      <span class="stat-sub text-muted">Across all workflows</span>
+    </div>
+
+    <div class="card stat-card">
+      <span class="stat-label">Tasks In Progress</span>
+      <span class="stat-value text-indigo">{{ inProgressTasks() }}</span>
+      <span class="stat-sub text-muted">Active execution</span>
+    </div>
+
+    <div class="card stat-card">
+      <span class="stat-label">Completed Tasks</span>
+      <span class="stat-value text-green">{{ completedTasks() }}</span>
+      <span class="stat-sub text-muted">Successfully finalized</span>
+    </div>
+
+    <div class="card stat-card">
+      <span class="stat-label">Secure Documents</span>
+      <span class="stat-value text-sky">{{ totalDocuments() }}</span>
+      <span class="stat-sub text-muted">SHA-256 verified</span>
+    </div>
+  </div>
+
+  <!-- Recent Tasks Section -->
+  <div class="card section-card">
+    <div class="section-header">
+      <h2 class="section-title">Recent Tasks</h2>
+      <a routerLink="/tasks" class="view-all-link">View All &rarr;</a>
+    </div>
+
+    @if (isLoading()) {
+      <div class="loading-state">Loading tasks...</div>
+    } @else if (recentTasks().length === 0) {
+      <div class="empty-state">
+        <p>No tasks created yet.</p>
+        <a routerLink="/tasks" class="btn btn-primary btn-sm">Create First Task</a>
+      </div>
+    } @else {
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Priority</th>
+              <th>Status</th>
+              <th>Created</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (task of recentTasks(); track task.id) {
+              <tr>
+                <td><strong>{{ task.title }}</strong></td>
+                <td>
+                  <span class="badge" [class]="getPriorityClass(task.priority)">
+                    {{ getPriorityName(task.priority) }}
+                  </span>
+                </td>
+                <td>
+                  <span class="badge" [class]="getStatusClass(task.status)">
+                    {{ getStatusName(task.status) }}
+                  </span>
+                </td>
+                <td>{{ task.createdAtUtc | date:'shortDate' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+
+  <!-- Deferrable View: Security & System Architecture Panel -->
+  @defer (on viewport) {
+    <div class="card telemetry-card">
+      <h3 class="telemetry-title">Security & Runtime Telemetry</h3>
+      <div class="grid-3 telemetry-grid">
+        <div class="telemetry-item">
+          <span class="telemetry-label">Session Protection</span>
+          <span class="telemetry-status">Active (SameSite=Strict, HttpOnly)</span>
+        </div>
+        <div class="telemetry-item">
+          <span class="telemetry-label">Data Protection API</span>
+          <span class="telemetry-status">Persisted in SQL Server</span>
+        </div>
+        <div class="telemetry-item">
+          <span class="telemetry-label">Rate Limiter</span>
+          <span class="telemetry-status">Sliding Window Partitioned</span>
+        </div>
+      </div>
+    </div>
+  } @placeholder {
+    <div class="card telemetry-placeholder">Loading security telemetry...</div>
+  }
+</div>

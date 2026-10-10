@@ -1,0 +1,13 @@
+<div class="toast-container" aria-live="polite">
+  @for (toast of toastService.toasts(); track toast.id) {
+    <div class="toast" [class]="'toast-' + toast.type" role="alert">
+      <div class="toast-content">
+        <strong class="toast-title">{{ toast.title }}</strong>
+        <p class="toast-message">{{ toast.message }}</p>
+      </div>
+      <button type="button" class="toast-close" (click)="toastService.remove(toast.id)" aria-label="Close">
+        &times;
+      </button>
+    </div>
+  }
+</div>

@@ -1,0 +1,117 @@
+<div class="container">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Compliance Audit Trail</h1>
+      <p class="page-subtitle">Immutable chronological change log with sensitive credential redaction</p>
+    </div>
+  </div>
+
+  <div class="card toolbar-card">
+    <div class="toolbar">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Filter by entity name (e.g. TaskItem, User, Document)..."
+        [value]="entityFilter()"
+        (input)="onEntityFilterChange($event)"
+      />
+    </div>
+  </div>
+
+  <div class="card">
+    @if (isLoading()) {
+      <div class="state-container">Loading compliance logs...</div>
+    } @else if (auditLogs().length === 0) {
+      <div class="state-container">No audit events found.</div>
+    } @else {
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Action</th>
+              <th>Entity</th>
+              <th>Target ID</th>
+              <th>Caller IP</th>
+              <th>Details</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (entry of auditLogs(); track entry.id) {
+              <tr>
+                <td>{{ entry.timestampUtc | date:'medium' }}</td>
+                <td>
+                  <span class="badge" [class]="getActionBadgeClass(entry.action)">
+                    {{ entry.action }}
+                  </span>
+                </td>
+                <td><strong>{{ entry.entityName }}</strong></td>
+                <td><code>{{ entry.entityId.substring(0, 8) }}...</code></td>
+                <td>{{ entry.clientIpAddress || 'Internal' }}</td>
+                <td>
+                  <button (click)="viewDetails(entry)" class="btn btn-secondary btn-sm">
+                    Inspect
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pagination-bar">
+        <span>Total records: {{ totalCount() }}</span>
+        <div class="page-buttons">
+          <button
+            class="btn btn-secondary btn-sm"
+            [disabled]="pageNumber() <= 1"
+            (click)="changePage(pageNumber() - 1)"
+          >
+            Previous
+          </button>
+          <span class="page-indicator">Page {{ pageNumber() }}</span>
+          <button
+            class="btn btn-secondary btn-sm"
+            [disabled]="auditLogs().length < pageSize()"
+            (click)="changePage(pageNumber() + 1)"
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- JSON Diff Inspection Modal -->
+  @if (selectedEntry()) {
+    <div class="modal-backdrop" (click)="closeDetails()">
+      <div class="modal card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>Audit Event Details</h3>
+          <button (click)="closeDetails()" class="modal-close">&times;</button>
+        </div>
+
+        <div class="modal-body">
+          <div class="diff-section">
+            <h4>Changed Columns</h4>
+            <code>{{ selectedEntry()?.changedColumnsJson || 'None' }}</code>
+          </div>
+
+          @if (selectedEntry()?.oldValuesJson) {
+            <div class="diff-section">
+              <h4>Old Values</h4>
+              <pre class="json-box">{{ formatJson(selectedEntry()?.oldValuesJson) }}</pre>
+            </div>
+          }
+
+          @if (selectedEntry()?.newValuesJson) {
+            <div class="diff-section">
+              <h4>New Values</h4>
+              <pre class="json-box">{{ formatJson(selectedEntry()?.newValuesJson) }}</pre>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</div>

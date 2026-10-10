@@ -1,0 +1,97 @@
+<div class="container">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Secure Documents Vault</h1>
+      <p class="page-subtitle">Cryptographically verified files with SHA-256 integrity tracking</p>
+    </div>
+  </div>
+
+  <!-- Upload Dropzone Card -->
+  <div class="card upload-card">
+    <div class="dropzone" (dragover)="onDragOver($event)" (drop)="onDrop($event)">
+      <div class="dropzone-icon">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+      </div>
+      <div class="dropzone-text">
+        <p class="dropzone-title">Drag & drop your files here, or <label for="fileInput" class="browse-link">browse</label></p>
+        <p class="dropzone-sub">Supported: PDF, DOCX, XLSX, Images, ZIP up to 25 MB. (Scripts and executables prohibited)</p>
+      </div>
+      <input
+        id="fileInput"
+        type="file"
+        class="hidden-input"
+        (change)="onFileSelected($event)"
+      />
+    </div>
+
+    @if (isUploading()) {
+      <div class="upload-progress">
+        <div class="progress-bar">
+          <div class="progress-fill"></div>
+        </div>
+        <span>Calculating SHA-256 hash & uploading securely...</span>
+      </div>
+    }
+  </div>
+
+  <!-- Documents Table Card -->
+  <div class="card">
+    <h2 class="section-title">Stored Documents</h2>
+
+    @if (isLoading()) {
+      <div class="state-container">Loading vault documents...</div>
+    } @else if (documents().length === 0) {
+      <div class="state-container">No documents uploaded to the vault yet.</div>
+    } @else {
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>File Name</th>
+              <th>Type</th>
+              <th>Size</th>
+              <th>SHA-256 Hash</th>
+              <th>Uploaded</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (doc of documents(); track doc.id) {
+              <tr>
+                <td>
+                  <strong>{{ doc.fileName }}</strong>
+                </td>
+                <td><span class="badge badge-medium">{{ doc.contentType }}</span></td>
+                <td>{{ formatFileSize(doc.fileSizeBytes) }}</td>
+                <td>
+                  <code
+                    class="hash-badge"
+                    (click)="copyHash(doc.hashSha256)"
+                    title="Click to copy full SHA-256 hash"
+                  >
+                    {{ doc.hashSha256.substring(0, 12) }}...
+                  </code>
+                </td>
+                <td>{{ doc.createdAtUtc | date:'shortDate' }}</td>
+                <td>
+                  <div class="actions-cell">
+                    <button (click)="download(doc)" class="btn btn-secondary btn-sm" title="Download">
+                      Download
+                    </button>
+                    <button (click)="delete(doc.id)" class="btn btn-danger btn-sm" title="Delete">
+                      Delete
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>

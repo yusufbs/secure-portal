@@ -1,0 +1,38 @@
+<header class="navbar">
+  <div class="navbar-content">
+    <a routerLink="/" class="navbar-brand">
+      <div class="brand-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+      </div>
+      <span>SecurePortal</span>
+    </a>
+
+    @if (authService.isAuthenticated()) {
+      <nav class="nav-links">
+        <a routerLink="/dashboard" routerLinkActive="active" class="nav-link">Dashboard</a>
+        <a routerLink="/tasks" routerLinkActive="active" class="nav-link">Tasks</a>
+        <a routerLink="/documents" routerLinkActive="active" class="nav-link">Documents</a>
+        @if (authService.isAdmin()) {
+          <a routerLink="/audit" routerLinkActive="active" class="nav-link">Audit Trail</a>
+        }
+      </nav>
+
+      <div class="nav-user">
+        <div class="user-badge">
+          <span class="user-name">{{ authService.currentUser()?.firstName }}</span>
+          <span class="badge badge-admin">{{ authService.currentUser()?.roles?.[0] }}</span>
+        </div>
+        <button (click)="authService.logout()" class="btn btn-secondary btn-sm">
+          Sign Out
+        </button>
+      </div>
+    } @else {
+      <div class="nav-actions">
+        <a routerLink="/login" class="btn btn-secondary btn-sm">Sign In</a>
+        <a routerLink="/register" class="btn btn-primary btn-sm">Register</a>
+      </div>
+    }
+  </div>
+</header>

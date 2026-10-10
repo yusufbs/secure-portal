@@ -1,0 +1,125 @@
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  gap: 1rem;
+}
+
+.page-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.page-subtitle {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+}
+
+.header-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.stats-grid {
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-label {
+  font-size: 0.825rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-dim);
+}
+
+.stat-value {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #fff;
+  margin: 0.25rem 0;
+}
+
+.stat-sub {
+  font-size: 0.8rem;
+}
+
+.text-indigo { color: #818cf8; }
+.text-green { color: #34d399; }
+.text-sky { color: #38bdf8; }
+
+.section-card {
+  margin-bottom: 2rem;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.section-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.view-all-link {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.empty-state, .loading-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-muted);
+}
+
+.telemetry-card {
+  background: #0f172a;
+  border: 1px solid #1e293b;
+}
+
+.telemetry-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+.telemetry-grid {
+  gap: 1rem;
+}
+
+.telemetry-item {
+  background: #1e293b;
+  padding: 1rem;
+  border-radius: var(--radius-sm);
+}
+
+.telemetry-label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  margin-bottom: 0.25rem;
+}
+
+.telemetry-status {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #10b981;
+}
+
+.telemetry-placeholder {
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-dim);
+}

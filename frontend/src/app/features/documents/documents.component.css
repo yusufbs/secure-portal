@@ -1,0 +1,124 @@
+.page-header {
+  margin-bottom: 1.5rem;
+}
+
+.page-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.page-subtitle {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.upload-card {
+  margin-bottom: 2rem;
+  padding: 2rem;
+}
+
+.dropzone {
+  border: 2px dashed var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  transition: all 0.2s ease;
+  background: rgba(30, 41, 59, 0.4);
+}
+
+.dropzone:hover {
+  border-color: var(--primary);
+  background: rgba(79, 70, 229, 0.05);
+}
+
+.dropzone-icon {
+  color: var(--primary);
+}
+
+.dropzone-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 0.25rem;
+}
+
+.browse-link {
+  color: #818cf8;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.dropzone-sub {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+
+.hidden-input {
+  display: none;
+}
+
+.upload-progress {
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.progress-bar {
+  height: 4px;
+  background: var(--border-color);
+  border-radius: 9999px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--primary);
+  width: 100%;
+  animation: progressPulse 1.2s infinite ease-in-out;
+}
+
+@keyframes progressPulse {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.section-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 1.25rem;
+}
+
+.hash-badge {
+  background: #1e293b;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.8rem;
+  color: #38bdf8;
+  cursor: pointer;
+  border: 1px solid #334155;
+}
+
+.hash-badge:hover {
+  background: #334155;
+}
+
+.actions-cell {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.state-container {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-muted);
+}

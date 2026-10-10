@@ -1,0 +1,191 @@
+<div class="container">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Tasks Management</h1>
+      <p class="page-subtitle">Track, filter, and assign work with keyset pagination & multi-tier cache</p>
+    </div>
+    <button (click)="openCreateModal()" class="btn btn-primary">+ Create Task</button>
+  </div>
+
+  <!-- Filters & Search Toolbar -->
+  <div class="card toolbar-card">
+    <div class="toolbar">
+      <div class="search-box">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search tasks..."
+          [value]="searchTerm()"
+          (input)="onSearchChange($event)"
+        />
+      </div>
+
+      <div class="filter-group">
+        <select class="form-control" [value]="statusFilter()" (change)="onStatusFilterChange($event)">
+          <option value="">All Statuses</option>
+          <option [value]="TaskItemStatus.Todo">To Do</option>
+          <option [value]="TaskItemStatus.InProgress">In Progress</option>
+          <option [value]="TaskItemStatus.InReview">In Review</option>
+          <option [value]="TaskItemStatus.Completed">Completed</option>
+        </select>
+
+        <select class="form-control" [value]="priorityFilter()" (change)="onPriorityFilterChange($event)">
+          <option value="">All Priorities</option>
+          <option [value]="TaskPriority.Low">Low</option>
+          <option [value]="TaskPriority.Medium">Medium</option>
+          <option [value]="TaskPriority.High">High</option>
+          <option [value]="TaskPriority.Critical">Critical</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tasks List Table -->
+  <div class="card">
+    @if (isLoading() && tasks().length === 0) {
+      <div class="state-container">Loading tasks from secure cache...</div>
+    } @else if (tasks().length === 0) {
+      <div class="state-container">
+        <p>No tasks match the selected criteria.</p>
+      </div>
+    } @else {
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Priority</th>
+              <th>Status</th>
+              <th>Due Date</th>
+              <th>Assignee</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (task of tasks(); track task.id) {
+              <tr>
+                <td>
+                  <div class="task-cell">
+                    <span class="task-title">{{ task.title }}</span>
+                    @if (task.description) {
+                      <span class="task-desc">{{ task.description }}</span>
+                    }
+                  </div>
+                </td>
+                <td>
+                  <span class="badge" [class]="getPriorityClass(task.priority)">
+                    {{ getPriorityName(task.priority) }}
+                  </span>
+                </td>
+                <td>
+                  <span class="badge" [class]="getStatusClass(task.status)">
+                    {{ getStatusName(task.status) }}
+                  </span>
+                </td>
+                <td>{{ task.dueDateUtc ? (task.dueDateUtc | date:'mediumDate') : '—' }}</td>
+                <td>{{ task.assignedToUsername || 'Unassigned' }}</td>
+                <td>
+                  <div class="actions-cell">
+                    @if (task.status !== TaskItemStatus.Completed) {
+                      <button (click)="markComplete(task)" class="btn btn-secondary btn-sm" title="Mark Complete">
+                        ✓
+                      </button>
+                    }
+                    <button (click)="deleteTask(task.id)" class="btn btn-danger btn-sm" title="Delete Task">
+                      ✕
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Keyset Pagination Controls -->
+      @if (hasNextPage()) {
+        <div class="pagination-footer">
+          <button
+            (click)="loadNextPage()"
+            class="btn btn-secondary"
+            [disabled]="isLoading()"
+          >
+            @if (isLoading()) {
+              <span>Loading next page...</span>
+            } @else {
+              <span>Load More Tasks &darr;</span>
+            }
+          </button>
+        </div>
+      }
+    }
+  </div>
+
+  <!-- Create Task Modal Dialog -->
+  @if (showModal()) {
+    <div class="modal-backdrop" (click)="closeModal()">
+      <div class="modal card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>Create New Task</h3>
+          <button (click)="closeModal()" class="modal-close">&times;</button>
+        </div>
+
+        <form [formGroup]="taskForm" (ngSubmit)="onCreateTask()">
+          <div class="form-group">
+            <label class="form-label" for="taskTitle">Task Title *</label>
+            <input
+              id="taskTitle"
+              type="text"
+              class="form-control"
+              formControlName="title"
+              placeholder="e.g. Conduct Code Vulnerability Review"
+            />
+            @if (taskForm.controls.title.touched && taskForm.controls.title.invalid) {
+              <div class="form-error">Title is required (max 200 chars).</div>
+            }
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="taskDescription">Description</label>
+            <textarea
+              id="taskDescription"
+              class="form-control"
+              rows="3"
+              formControlName="description"
+              placeholder="Provide task specifications and criteria..."
+            ></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="taskPriority">Priority</label>
+              <select id="taskPriority" class="form-control" formControlName="priority">
+                <option [value]="TaskPriority.Low">Low</option>
+                <option [value]="TaskPriority.Medium">Medium</option>
+                <option [value]="TaskPriority.High">High</option>
+                <option [value]="TaskPriority.Critical">Critical</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="taskDueDate">Due Date</label>
+              <input
+                id="taskDueDate"
+                type="date"
+                class="form-control"
+                formControlName="dueDate"
+              />
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" (click)="closeModal()" class="btn btn-secondary">Cancel</button>
+            <button type="submit" class="btn btn-primary" [disabled]="taskForm.invalid || isSubmitting()">
+              {{ isSubmitting() ? 'Saving...' : 'Create Task' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</div>
